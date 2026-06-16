@@ -1,0 +1,339 @@
+Build the ENTIRE project in ONE GO. Do not generate partial code, placeholders, TODO comments, or ask me to build modules separately.
+
+Create a complete production-ready Full Stack School Management Website.
+
+VERY IMPORTANT:
+
+* Build EVERYTHING at once.
+* Merge frontend and backend into ONE project.
+* Do NOT create separate repositories.
+* The entire website must start with ONLY ONE command:
+
+npm run dev
+
+Do not require multiple terminals or separate commands.
+
+Tech Stack:
+
+* React + TypeScript
+* Node.js + Express
+* MongoDB + Mongoose
+* Tailwind CSS
+
+Requirements:
+
+* Mobile responsive
+* Fast loading
+* Gujarati Unicode support everywhere
+* Clean modern UI
+* Professional design
+* SEO friendly
+
+Theme:
+
+Primary Color: Dark Blue (#0A2342)
+
+Secondary Color: White (#FFFFFF)
+
+Use only a professional Dark Blue and White theme throughout the website.
+
+Avoid colorful designs.
+
+School Information:
+
+School Name:
+શ્રીમતી ડી વી પટેલ ઉ.મા.શાળા ખડોદી બોરવાઈ
+
+Education Trust Name:
+શ્રી ખડોદી બોરવાઈ ગ્રુપ કેળવણી મંડળ ખડોદી બોરવાઈ
+
+School Address:
+મુકામ પોસ્ટ બોરવાઈ તાલુકો ખાનપુર જિલ્લો મહીસાગર પિન 389232 ગુજરાત ભારત
+
+Established Year:
+1972
+
+Classes:
+
+9A
+9B
+10A
+10B
+11
+12
+
+Management Members:
+
+President:
+શ્રી ત્રિવેદી રમણલાલ હીરાલાલ
+
+Secretary:
+શ્રી જોશી પ્રવિણચંદ્ર પ્રેમશંકર
+
+Principal:
+શ્રી હરેશકુમાર ડાહ્યાભાઈ ભટ્ટ
+
+School Facilities:
+
+* Modern Laboratory
+* Computer Room
+* Smart Board
+* Kabaddi Ground
+* Cricket Ground
+* Basketball Ground
+* Volleyball Ground
+
+Create these website pages:
+
+1. Home Page
+
+* Hero section
+* School information
+* Principal message
+* Statistics cards
+* Quick links
+
+2. About School
+
+3. Management
+
+4. Facilities
+
+5. Staff Directory
+
+6. Student Directory
+
+7. Results
+
+8. Top 5 Students
+
+9. Notice Board
+
+10. Photo Gallery
+
+11. Contact Page
+
+12. Admin Dashboard
+
+13. Academic Statistics
+
+14. School Family
+
+Create a secure Admin Dashboard.
+
+Public visitors can only view data.
+
+Only admin can edit data.
+
+Staff Management:
+
+Fields:
+
+* Employee Photo
+* Employee Name
+* Date Of Birth
+* Appointment Date
+* School Joining Date
+* Retirement Date
+* Employee Number
+* GPSC PF Number
+* UID Number
+* Aadhaar Number
+* PAN Number
+* Qualification
+* Subjects Taught
+
+Features:
+
+* Add
+* Edit
+* Delete
+* Search
+* Filter
+* Upload Photo
+
+Student Management:
+
+Classes:
+
+9A
+9B
+10A
+10B
+11
+12
+
+Fields:
+
+* GR Number
+* Student Name
+* Date Of Birth
+* Gender
+* UID Number
+* PAN Number
+* Mobile Number
+* Village Name
+* Result
+
+Features:
+
+* Add
+* Edit
+* Delete
+* Search
+* Filter
+* Upload Photo
+
+Display all students class-wise.
+
+Top 5 Student Result System:
+
+For every class:
+
+9A
+9B
+10A
+10B
+11
+12
+
+Fields:
+
+* Rank
+* Student Photo
+* Student Name
+* Father Name
+* Percentage
+* Total Marks
+* Grade
+* Academic Year
+
+Display:
+
+🥇 Rank 1 Gold
+
+🥈 Rank 2 Silver
+
+🥉 Rank 3 Bronze
+
+🏅 Rank 4
+
+🏅 Rank 5
+
+Features:
+
+* Select Class
+* Select Academic Year
+* Print Result
+* Download PDF
+
+Caste Statistics:
+
+Editable categories:
+
+ST
+* Boys
+* Girls
+
+OBC
+* Boys
+* Girls
+
+SC
+* Boys
+* Girls
+
+GENERAL
+* Boys
+* Girls
+
+Generate charts automatically.
+
+Notice Board:
+
+Admin can:
+
+* Add notice
+* Edit notice
+* Delete notice
+* Publish notice
+
+Photo Gallery:
+
+Admin can:
+
+* Upload photos
+* Delete photos
+
+Contact Page:
+
+Admin can edit:
+
+* Phone Number
+* Email
+* Google Map link
+* Social Media links
+
+MongoDB Collections:
+
+* admins
+* staff
+* students
+* topStudents
+* notices
+* gallery
+* schoolInfo
+* casteStatistics
+
+Security:
+
+* JWT Authentication
+* bcrypt password hashing
+* Environment variables
+* Proper validation
+* Error handling
+
+Technical Requirements:
+
+* Use Mongoose models
+* Create REST APIs
+* Use Multer for image upload
+* Add loading states
+* Add pagination
+* Add search functionality
+
+Create these files automatically:
+
+* package.json
+* README.md
+* .env.example
+
+IMPORTANT:
+
+Merge frontend and backend into ONE project.
+
+Do not ask me to manually connect frontend and backend.
+
+Do not ask me to create additional files.
+
+Do not ask me to configure databases manually.
+
+Create the entire project fully functional in one attempt.
+
+The website must run using only:
+
+npm install
+
+then
+
+npm run dev
+
+Create package.json scripts accordingly.
+
+Create a default admin account:
+
+Email: dvpatelhighschool@gmail.com
+
+Password: dvpatel@123
+
+At the end, provide simple deployment instructions for Replit.

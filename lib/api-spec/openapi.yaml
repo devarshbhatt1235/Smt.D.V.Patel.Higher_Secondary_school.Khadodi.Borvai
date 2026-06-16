@@ -1,22 +1,29 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: School Management System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: auth
+  - name: staff
+  - name: students
+  - name: topStudents
+  - name: notices
+  - name: gallery
+  - name: schoolInfo
+  - name: casteStats
+  - name: contact
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +31,1119 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: adminLogin
+      tags: [auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      operationId: getAdminMe
+      tags: [auth]
+      summary: Get current admin
+      responses:
+        "200":
+          description: Admin profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+        "401":
+          description: Unauthorized
+
+  # --- School Info ---
+  /school-info:
+    get:
+      operationId: getSchoolInfo
+      tags: [schoolInfo]
+      summary: Get school information
+      responses:
+        "200":
+          description: School info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchoolInfo"
+    put:
+      operationId: updateSchoolInfo
+      tags: [schoolInfo]
+      summary: Update school information (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SchoolInfoInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchoolInfo"
+
+  # --- Staff ---
+  /staff:
+    get:
+      operationId: getStaff
+      tags: [staff]
+      summary: List all staff
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: subject
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of staff
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Staff"
+    post:
+      operationId: createStaff
+      tags: [staff]
+      summary: Add staff member (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StaffInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
+
+  /staff/{id}:
+    get:
+      operationId: getStaffById
+      tags: [staff]
+      summary: Get staff by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Staff member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
+    patch:
+      operationId: updateStaff
+      tags: [staff]
+      summary: Update staff member (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StaffUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
+    delete:
+      operationId: deleteStaff
+      tags: [staff]
+      summary: Delete staff member (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # --- Students ---
+  /students:
+    get:
+      operationId: getStudents
+      tags: [students]
+      summary: List students
+      parameters:
+        - name: class
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: gender
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Add student (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/{id}:
+    get:
+      operationId: getStudentById
+      tags: [students]
+      summary: Get student by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    patch:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update student (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    delete:
+      operationId: deleteStudent
+      tags: [students]
+      summary: Delete student (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /students/stats/summary:
+    get:
+      operationId: getStudentStats
+      tags: [students]
+      summary: Student statistics summary (totals per class, gender breakdown)
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentStats"
+
+  # --- Top Students ---
+  /top-students:
+    get:
+      operationId: getTopStudents
+      tags: [topStudents]
+      summary: List top students
+      parameters:
+        - name: class
+          in: query
+          schema:
+            type: string
+        - name: year
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Top students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TopStudent"
+    post:
+      operationId: createTopStudent
+      tags: [topStudents]
+      summary: Add top student (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TopStudentInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopStudent"
+
+  /top-students/{id}:
+    patch:
+      operationId: updateTopStudent
+      tags: [topStudents]
+      summary: Update top student (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TopStudentUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopStudent"
+    delete:
+      operationId: deleteTopStudent
+      tags: [topStudents]
+      summary: Delete top student (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # --- Notices ---
+  /notices:
+    get:
+      operationId: getNotices
+      tags: [notices]
+      summary: List notices
+      parameters:
+        - name: published
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Notices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notice"
+    post:
+      operationId: createNotice
+      tags: [notices]
+      summary: Create notice (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoticeInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notice"
+
+  /notices/{id}:
+    patch:
+      operationId: updateNotice
+      tags: [notices]
+      summary: Update notice (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoticeUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notice"
+    delete:
+      operationId: deleteNotice
+      tags: [notices]
+      summary: Delete notice (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # --- Gallery ---
+  /gallery:
+    get:
+      operationId: getGallery
+      tags: [gallery]
+      summary: List gallery photos
+      responses:
+        "200":
+          description: Photos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GalleryPhoto"
+    post:
+      operationId: createGalleryPhoto
+      tags: [gallery]
+      summary: Add gallery photo (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GalleryPhotoInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GalleryPhoto"
+
+  /gallery/{id}:
+    delete:
+      operationId: deleteGalleryPhoto
+      tags: [gallery]
+      summary: Delete gallery photo (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # --- Caste Statistics ---
+  /caste-stats:
+    get:
+      operationId: getCasteStats
+      tags: [casteStats]
+      summary: Get caste statistics
+      responses:
+        "200":
+          description: Caste stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CasteStats"
+    put:
+      operationId: updateCasteStats
+      tags: [casteStats]
+      summary: Update caste statistics (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CasteStatsInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CasteStats"
+
+  # --- Contact ---
+  /contact:
+    get:
+      operationId: getContact
+      tags: [contact]
+      summary: Get contact information
+      responses:
+        "200":
+          description: Contact info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+    put:
+      operationId: updateContact
+      tags: [contact]
+      summary: Update contact (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+
+  # --- Dashboard ---
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [schoolInfo]
+      summary: Admin dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
+
+    # Auth
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      required: [token, admin]
+      properties:
+        token:
+          type: string
+        admin:
+          $ref: "#/components/schemas/Admin"
+
+    Admin:
+      type: object
+      required: [id, email]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: ["string", "null"]
+
+    # School Info
+    SchoolInfo:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: integer
+        nameGujarati:
+          type: string
+        nameEnglish:
+          type: string
+        trustName:
+          type: string
+        address:
+          type: string
+        established:
+          type: integer
+        principalMessage:
+          type: ["string", "null"]
+        principalName:
+          type: ["string", "null"]
+        presidentName:
+          type: ["string", "null"]
+        secretaryName:
+          type: ["string", "null"]
+        facilities:
+          type: array
+          items:
+            type: string
+        totalStudents:
+          type: ["integer", "null"]
+        totalStaff:
+          type: ["integer", "null"]
+        totalYears:
+          type: ["integer", "null"]
+
+    SchoolInfoInput:
+      type: object
+      properties:
+        nameGujarati:
+          type: string
+        nameEnglish:
+          type: string
+        trustName:
+          type: string
+        address:
+          type: string
+        established:
+          type: integer
+        principalMessage:
+          type: string
+        principalName:
+          type: string
+        presidentName:
+          type: string
+        secretaryName:
+          type: string
+        facilities:
+          type: array
+          items:
+            type: string
+
+    # Staff
+    Staff:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        photoUrl:
+          type: ["string", "null"]
+        dateOfBirth:
+          type: ["string", "null"]
+        appointmentDate:
+          type: ["string", "null"]
+        joiningDate:
+          type: ["string", "null"]
+        retirementDate:
+          type: ["string", "null"]
+        employeeNumber:
+          type: ["string", "null"]
+        gpscPfNumber:
+          type: ["string", "null"]
+        uidNumber:
+          type: ["string", "null"]
+        aadhaarNumber:
+          type: ["string", "null"]
+        panNumber:
+          type: ["string", "null"]
+        qualification:
+          type: ["string", "null"]
+        subjectsTaught:
+          type: array
+          items:
+            type: string
+
+    StaffInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        photoUrl:
+          type: string
+        dateOfBirth:
+          type: string
+        appointmentDate:
+          type: string
+        joiningDate:
+          type: string
+        retirementDate:
+          type: string
+        employeeNumber:
+          type: string
+        gpscPfNumber:
+          type: string
+        uidNumber:
+          type: string
+        aadhaarNumber:
+          type: string
+        panNumber:
+          type: string
+        qualification:
+          type: string
+        subjectsTaught:
+          type: array
+          items:
+            type: string
+
+    StaffUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        photoUrl:
+          type: string
+        dateOfBirth:
+          type: string
+        appointmentDate:
+          type: string
+        joiningDate:
+          type: string
+        retirementDate:
+          type: string
+        employeeNumber:
+          type: string
+        gpscPfNumber:
+          type: string
+        uidNumber:
+          type: string
+        aadhaarNumber:
+          type: string
+        panNumber:
+          type: string
+        qualification:
+          type: string
+        subjectsTaught:
+          type: array
+          items:
+            type: string
+
+    # Students
+    Student:
+      type: object
+      required: [id, name, grNumber, class]
+      properties:
+        id:
+          type: integer
+        grNumber:
+          type: string
+        name:
+          type: string
+        class:
+          type: string
+        dateOfBirth:
+          type: ["string", "null"]
+        gender:
+          type: ["string", "null"]
+        uidNumber:
+          type: ["string", "null"]
+        panNumber:
+          type: ["string", "null"]
+        mobileNumber:
+          type: ["string", "null"]
+        villageName:
+          type: ["string", "null"]
+        result:
+          type: ["string", "null"]
+        photoUrl:
+          type: ["string", "null"]
+        casteCategory:
+          type: ["string", "null"]
+
+    StudentInput:
+      type: object
+      required: [name, grNumber, class]
+      properties:
+        grNumber:
+          type: string
+        name:
+          type: string
+        class:
+          type: string
+        dateOfBirth:
+          type: string
+        gender:
+          type: string
+        uidNumber:
+          type: string
+        panNumber:
+          type: string
+        mobileNumber:
+          type: string
+        villageName:
+          type: string
+        result:
+          type: string
+        photoUrl:
+          type: string
+        casteCategory:
+          type: string
+
+    StudentUpdate:
+      type: object
+      properties:
+        grNumber:
+          type: string
+        name:
+          type: string
+        class:
+          type: string
+        dateOfBirth:
+          type: string
+        gender:
+          type: string
+        uidNumber:
+          type: string
+        panNumber:
+          type: string
+        mobileNumber:
+          type: string
+        villageName:
+          type: string
+        result:
+          type: string
+        photoUrl:
+          type: string
+        casteCategory:
+          type: string
+
+    StudentStats:
+      type: object
+      required: [total, byClass]
+      properties:
+        total:
+          type: integer
+        byClass:
+          type: array
+          items:
+            type: object
+            required: [class, count]
+            properties:
+              class:
+                type: string
+              count:
+                type: integer
+              boys:
+                type: integer
+              girls:
+                type: integer
+        byGender:
+          type: object
+          properties:
+            boys:
+              type: integer
+            girls:
+              type: integer
+
+    # Top Students
+    TopStudent:
+      type: object
+      required: [id, name, class, rank, year]
+      properties:
+        id:
+          type: integer
+        rank:
+          type: integer
+        name:
+          type: string
+        fatherName:
+          type: ["string", "null"]
+        class:
+          type: string
+        percentage:
+          type: ["number", "null"]
+        totalMarks:
+          type: ["integer", "null"]
+        grade:
+          type: ["string", "null"]
+        year:
+          type: string
+        photoUrl:
+          type: ["string", "null"]
+
+    TopStudentInput:
+      type: object
+      required: [name, class, rank, year]
+      properties:
+        rank:
+          type: integer
+        name:
+          type: string
+        fatherName:
+          type: string
+        class:
+          type: string
+        percentage:
+          type: number
+        totalMarks:
+          type: integer
+        grade:
+          type: string
+        year:
+          type: string
+        photoUrl:
+          type: string
+
+    TopStudentUpdate:
+      type: object
+      properties:
+        rank:
+          type: integer
+        name:
+          type: string
+        fatherName:
+          type: string
+        class:
+          type: string
+        percentage:
+          type: number
+        totalMarks:
+          type: integer
+        grade:
+          type: string
+        year:
+          type: string
+        photoUrl:
+          type: string
+
+    # Notices
+    Notice:
+      type: object
+      required: [id, title, content]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    NoticeInput:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+
+    NoticeUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+
+    # Gallery
+    GalleryPhoto:
+      type: object
+      required: [id, imageUrl]
+      properties:
+        id:
+          type: integer
+        imageUrl:
+          type: string
+        caption:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    GalleryPhotoInput:
+      type: object
+      required: [imageUrl]
+      properties:
+        imageUrl:
+          type: string
+        caption:
+          type: string
+
+    # Caste Stats
+    CasteStats:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: integer
+        stBoys:
+          type: integer
+        stGirls:
+          type: integer
+        obcBoys:
+          type: integer
+        obcGirls:
+          type: integer
+        scBoys:
+          type: integer
+        scGirls:
+          type: integer
+        generalBoys:
+          type: integer
+        generalGirls:
+          type: integer
+
+    CasteStatsInput:
+      type: object
+      properties:
+        stBoys:
+          type: integer
+        stGirls:
+          type: integer
+        obcBoys:
+          type: integer
+        obcGirls:
+          type: integer
+        scBoys:
+          type: integer
+        scGirls:
+          type: integer
+        generalBoys:
+          type: integer
+        generalGirls:
+          type: integer
+
+    # Contact
+    Contact:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: integer
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        mapLink:
+          type: ["string", "null"]
+        facebookUrl:
+          type: ["string", "null"]
+        whatsappNumber:
+          type: ["string", "null"]
+        youtubeUrl:
+          type: ["string", "null"]
+
+    ContactInput:
+      type: object
+      properties:
+        phone:
+          type: string
+        email:
+          type: string
+        mapLink:
+          type: string
+        facebookUrl:
+          type: string
+        whatsappNumber:
+          type: string
+        youtubeUrl:
+          type: string
+
+    # Dashboard
+    DashboardStats:
+      type: object
+      required: [totalStudents, totalStaff, totalNotices, totalPhotos]
+      properties:
+        totalStudents:
+          type: integer
+        totalStaff:
+          type: integer
+        totalNotices:
+          type: integer
+        totalPhotos:
+          type: integer
+        studentsByClass:
+          type: array
+          items:
+            type: object
+            required: [class, count]
+            properties:
+              class:
+                type: string
+              count:
+                type: integer
 
