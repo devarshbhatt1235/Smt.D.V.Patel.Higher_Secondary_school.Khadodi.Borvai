@@ -1,22 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useGetAdminMe } from "@workspace/api-client-react";
 
 export function useAuth() {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("school_token"));
-  
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("school_token", token);
+  const [token, setTokenState] = useState<string | null>(
+    () => localStorage.getItem("school_token")
+  );
+
+  const setToken = useCallback((newToken: string | null) => {
+    if (newToken) {
+      localStorage.setItem("school_token", newToken);
     } else {
       localStorage.removeItem("school_token");
     }
-  }, [token]);
+    setTokenState(newToken);
+  }, []);
 
-  const { data: admin, isLoading, error } = useGetAdminMe({
+  const { data: admin, isLoading } = useGetAdminMe({
     query: {
       enabled: !!token,
       retry: false,
-    } as any
+    } as any,
   });
 
   const isAuthenticated = !!admin && !!token;
@@ -27,6 +30,5 @@ export function useAuth() {
     admin,
     isLoading: isLoading && !!token,
     isAuthenticated,
-    error
   };
 }
