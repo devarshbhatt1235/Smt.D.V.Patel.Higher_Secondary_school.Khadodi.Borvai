@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: dvpatel-school
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @workspace/school run build && pnpm --filter @workspace/api-server run build
+    startCommand: node --enable-source-maps artifacts/api-server/dist/index.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dg7400fxz
+      - key: CLOUDINARY_API_KEY
+        value: 693423314473277
+      - key: CLOUDINARY_API_SECRET
+        sync: false
