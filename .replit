@@ -33,3 +33,9 @@ externalPort = 3000
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+CLOUDINARY_CLOUD_NAME = "dg7400fxz"
+CLOUDINARY_API_KEY = "693423314473277"
