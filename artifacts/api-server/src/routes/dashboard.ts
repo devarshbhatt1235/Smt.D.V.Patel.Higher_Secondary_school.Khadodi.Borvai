@@ -1,28 +1,32 @@
 import { Router } from "express";
-import { db, staffTable, studentsTable, noticesTable, galleryTable } from "@workspace/db";
-import { count } from "drizzle-orm";
+import { Staff } from "../models/Staff";
+import { Student } from "../models/Student";
+import { Notice } from "../models/Notice";
+import { Gallery } from "../models/Gallery";
 import { logger } from "../lib/logger";
 
 const router = Router();
 
 router.get("/dashboard/stats", async (_req, res) => {
   try {
-    const [staffCount] = await db.select({ count: count() }).from(staffTable);
-    const [noticeCount] = await db.select({ count: count() }).from(noticesTable);
-    const [photoCount] = await db.select({ count: count() }).from(galleryTable);
-    const allStudents = await db.select({ class: studentsTable.class }).from(studentsTable);
+    const [totalStaff, totalNotices, totalPhotos, allStudents] = await Promise.all([
+      Staff.countDocuments(),
+      Notice.countDocuments(),
+      Gallery.countDocuments(),
+      Student.find({}, { class: 1 }),
+    ]);
 
     const classCounts: Record<string, number> = {};
     for (const s of allStudents) {
       classCounts[s.class] = (classCounts[s.class] ?? 0) + 1;
     }
-    const studentsByClass = Object.entries(classCounts).map(([cls, cnt]) => ({ class: cls, count: cnt }));
+    const studentsByClass = Object.entries(classCounts).map(([cls, count]) => ({ class: cls, count }));
 
     res.json({
       totalStudents: allStudents.length,
-      totalStaff: staffCount.count,
-      totalNotices: noticeCount.count,
-      totalPhotos: photoCount.count,
+      totalStaff,
+      totalNotices,
+      totalPhotos,
       studentsByClass,
     });
   } catch (err) {

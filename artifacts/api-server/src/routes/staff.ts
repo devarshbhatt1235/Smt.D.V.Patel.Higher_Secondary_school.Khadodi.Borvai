@@ -1,23 +1,31 @@
 import { Router } from "express";
-import { db, staffTable } from "@workspace/db";
-import { eq, ilike, or } from "drizzle-orm";
+import { Staff } from "../models/Staff";
 import { requireAuth } from "../middlewares/auth";
 import { logger } from "../lib/logger";
 
 const router = Router();
 
+function toJson(doc: any) {
+  const obj = doc.toObject ? doc.toObject() : doc;
+  return { ...obj, id: obj._id?.toString(), _id: undefined, __v: undefined };
+}
+
 router.get("/staff", async (req, res) => {
   try {
     const search = req.query.search as string | undefined;
     const subject = req.query.subject as string | undefined;
-    let rows = await db.select().from(staffTable).orderBy(staffTable.name);
+    let query: any = {};
     if (search) {
-      rows = rows.filter(s => s.name.toLowerCase().includes(search.toLowerCase()) || (s.qualification ?? "").toLowerCase().includes(search.toLowerCase()));
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { qualification: { $regex: search, $options: "i" } },
+      ];
     }
     if (subject) {
-      rows = rows.filter(s => s.subjectsTaught.some((sub: string) => sub.toLowerCase().includes(subject.toLowerCase())));
+      query.subjectsTaught = { $elemMatch: { $regex: subject, $options: "i" } };
     }
-    res.json(rows);
+    const rows = await Staff.find(query).sort({ name: 1 });
+    res.json(rows.map(toJson));
   } catch (err) {
     logger.error({ err }, "Get staff error");
     res.status(500).json({ error: "Server error" });
@@ -26,9 +34,8 @@ router.get("/staff", async (req, res) => {
 
 router.post("/staff", requireAuth, async (req, res) => {
   try {
-    const data = { ...req.body, subjectsTaught: req.body.subjectsTaught ?? [] };
-    const [created] = await db.insert(staffTable).values(data).returning();
-    res.status(201).json(created);
+    const doc = await Staff.create(req.body);
+    res.status(201).json(toJson(doc));
   } catch (err) {
     logger.error({ err }, "Create staff error");
     res.status(500).json({ error: "Server error" });
@@ -37,10 +44,9 @@ router.post("/staff", requireAuth, async (req, res) => {
 
 router.get("/staff/:id", async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] as string);
-    const [staff] = await db.select().from(staffTable).where(eq(staffTable.id, id)).limit(1);
-    if (!staff) { res.status(404).json({ error: "Not found" }); return; }
-    res.json(staff);
+    const doc = await Staff.findById(req.params["id"]);
+    if (!doc) { res.status(404).json({ error: "Not found" }); return; }
+    res.json(toJson(doc));
   } catch (err) {
     logger.error({ err }, "Get staff by id error");
     res.status(500).json({ error: "Server error" });
@@ -49,10 +55,9 @@ router.get("/staff/:id", async (req, res) => {
 
 router.patch("/staff/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] as string);
-    const [updated] = await db.update(staffTable).set(req.body).where(eq(staffTable.id, id)).returning();
-    if (!updated) { res.status(404).json({ error: "Not found" }); return; }
-    res.json(updated);
+    const doc = await Staff.findByIdAndUpdate(req.params["id"], req.body, { new: true });
+    if (!doc) { res.status(404).json({ error: "Not found" }); return; }
+    res.json(toJson(doc));
   } catch (err) {
     logger.error({ err }, "Update staff error");
     res.status(500).json({ error: "Server error" });
@@ -61,8 +66,7 @@ router.patch("/staff/:id", requireAuth, async (req, res) => {
 
 router.delete("/staff/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] as string);
-    await db.delete(staffTable).where(eq(staffTable.id, id));
+    await Staff.findByIdAndDelete(req.params["id"]);
     res.status(204).end();
   } catch (err) {
     logger.error({ err }, "Delete staff error");

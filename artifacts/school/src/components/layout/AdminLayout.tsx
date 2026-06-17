@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
-import { LayoutDashboard, Users, UserSquare, Medal, Bell, Image as ImageIcon, Settings, LogOut, Info, Map, PieChart } from "lucide-react";
+import { LayoutDashboard, Users, UserSquare, Medal, Bell, Image as ImageIcon, LogOut, Info, Map, PieChart, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +19,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     { href: "/admin/top-students", label: "Top Students", icon: Medal },
     { href: "/admin/notices", label: "Notices", icon: Bell },
     { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
+    { href: "/admin/management", label: "Management", icon: Building2 },
     { href: "/admin/caste-stats", label: "Caste Stats", icon: PieChart },
     { href: "/admin/school-info", label: "School Info", icon: Info },
     { href: "/admin/contact", label: "Contact Info", icon: Map },

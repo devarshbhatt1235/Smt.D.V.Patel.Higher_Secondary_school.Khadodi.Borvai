@@ -320,6 +320,22 @@ export interface ContactInput {
   youtubeUrl?: string;
 }
 
+export interface ManagementMember {
+  id: string;
+  name: string;
+  designation: string;
+  /** @nullable */
+  photoUrl?: string | null;
+  order?: number;
+}
+
+export interface ManagementMemberInput {
+  name: string;
+  designation: string;
+  photoUrl?: string;
+  order?: number;
+}
+
 export type DashboardStatsStudentsByClassItem = {
   class: string;
   count: number;

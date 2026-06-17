@@ -22,6 +22,8 @@ export * from './getTopStudentsParams';
 export * from './healthStatus';
 export * from './loginInput';
 export * from './loginResponse';
+export * from './managementMember';
+export * from './managementMemberInput';
 export * from './notice';
 export * from './noticeInput';
 export * from './noticeUpdate';

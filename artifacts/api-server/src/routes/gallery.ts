@@ -1,15 +1,26 @@
 import { Router } from "express";
-import { db, galleryTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { Gallery } from "../models/Gallery";
+import cloudinary from "../lib/cloudinary";
 import { requireAuth } from "../middlewares/auth";
 import { logger } from "../lib/logger";
 
 const router = Router();
 
+function toJson(doc: any) {
+  const obj = doc.toObject ? doc.toObject() : doc;
+  return {
+    ...obj,
+    id: obj._id?.toString(),
+    _id: undefined,
+    __v: undefined,
+    createdAt: obj.createdAt?.toISOString?.() ?? obj.createdAt,
+  };
+}
+
 router.get("/gallery", async (_req, res) => {
   try {
-    const rows = await db.select().from(galleryTable).orderBy(galleryTable.createdAt);
-    res.json(rows.map(r => ({ ...r, createdAt: r.createdAt.toISOString() })));
+    const rows = await Gallery.find().sort({ createdAt: -1 });
+    res.json(rows.map(toJson));
   } catch (err) {
     logger.error({ err }, "Get gallery error");
     res.status(500).json({ error: "Server error" });
@@ -18,8 +29,8 @@ router.get("/gallery", async (_req, res) => {
 
 router.post("/gallery", requireAuth, async (req, res) => {
   try {
-    const [created] = await db.insert(galleryTable).values(req.body).returning();
-    res.status(201).json({ ...created, createdAt: created.createdAt.toISOString() });
+    const doc = await Gallery.create(req.body);
+    res.status(201).json(toJson(doc));
   } catch (err) {
     logger.error({ err }, "Create gallery photo error");
     res.status(500).json({ error: "Server error" });
@@ -28,8 +39,11 @@ router.post("/gallery", requireAuth, async (req, res) => {
 
 router.delete("/gallery/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] as string);
-    await db.delete(galleryTable).where(eq(galleryTable.id, id));
+    const doc = await Gallery.findById(req.params["id"]);
+    if (doc?.cloudinaryId) {
+      await cloudinary.uploader.destroy(doc.cloudinaryId).catch(() => {});
+    }
+    await Gallery.findByIdAndDelete(req.params["id"]);
     res.status(204).end();
   } catch (err) {
     logger.error({ err }, "Delete gallery photo error");

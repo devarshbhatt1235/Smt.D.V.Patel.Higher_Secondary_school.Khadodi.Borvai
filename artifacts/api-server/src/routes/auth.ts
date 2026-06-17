@@ -1,7 +1,6 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
-import { db, adminsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { Admin } from "../models/Admin";
 import { signToken, requireAuth, type AuthRequest } from "../middlewares/auth";
 import { logger } from "../lib/logger";
 
@@ -14,7 +13,7 @@ router.post("/auth/login", async (req, res) => {
     return;
   }
   try {
-    const [admin] = await db.select().from(adminsTable).where(eq(adminsTable.email, email)).limit(1);
+    const admin = await Admin.findOne({ email });
     if (!admin) {
       res.status(401).json({ error: "Invalid credentials" });
       return;
@@ -24,8 +23,8 @@ router.post("/auth/login", async (req, res) => {
       res.status(401).json({ error: "Invalid credentials" });
       return;
     }
-    const token = signToken(admin.id);
-    res.json({ token, admin: { id: admin.id, email: admin.email, name: admin.name } });
+    const token = signToken(admin._id.toString());
+    res.json({ token, admin: { id: admin._id.toString(), email: admin.email, name: admin.name } });
   } catch (err) {
     logger.error({ err }, "Login error");
     res.status(500).json({ error: "Server error" });
@@ -34,13 +33,17 @@ router.post("/auth/login", async (req, res) => {
 
 router.get("/auth/me", requireAuth, async (req: AuthRequest, res) => {
   try {
-    const [admin] = await db.select().from(adminsTable).where(eq(adminsTable.id, req.adminId!)).limit(1);
+    const admin = await Admin.findById(req.adminId);
     if (!admin) {
-      res.status(404).json({ error: "Admin not found" });
+      res.status(401).json({ error: "Admin not found" });
       return;
     }
-    res.json({ id: admin.id, email: admin.email, name: admin.name });
-  } catch (err) {
+    res.json({ id: admin._id.toString(), email: admin.email, name: admin.name });
+  } catch (err: any) {
+    if (err?.name === "CastError") {
+      res.status(401).json({ error: "Invalid token" });
+      return;
+    }
     logger.error({ err }, "Get me error");
     res.status(500).json({ error: "Server error" });
   }

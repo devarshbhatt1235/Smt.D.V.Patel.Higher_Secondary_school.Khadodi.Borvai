@@ -11,6 +11,7 @@ import casteStatsRouter from "./casteStats";
 import contactRouter from "./contact";
 import dashboardRouter from "./dashboard";
 import uploadRouter from "./upload";
+import managementRouter from "./management";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(casteStatsRouter);
 router.use(contactRouter);
 router.use(dashboardRouter);
 router.use(uploadRouter);
+router.use(managementRouter);
 
 export default router;

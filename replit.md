@@ -10,15 +10,17 @@ A complete school management website for Shrimati DV Patel Upper Secondary Schoo
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required secrets: `MONGODB_URI`, `CLOUDINARY_API_SECRET`
+- Required env vars: `CLOUDINARY_CLOUD_NAME=dg7400fxz`, `CLOUDINARY_API_KEY=693423314473277`
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - Frontend: React + Vite (artifact: `artifacts/school`)
 - API: Express 5 (artifact: `artifacts/api-server`)
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
+- DB: MongoDB via Mongoose (cloud: MongoDB Atlas)
+- File storage: Cloudinary (cloud_name: dg7400fxz)
+- Validation: Zod (`zod/v4`)
 - API codegen: Orval (from OpenAPI spec)
 - Auth: JWT (`jsonwebtoken` + `bcrypt`)
 - Build: esbuild (CJS bundle)

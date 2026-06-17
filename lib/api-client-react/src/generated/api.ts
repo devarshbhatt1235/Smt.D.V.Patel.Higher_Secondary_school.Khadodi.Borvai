@@ -35,6 +35,8 @@ import type {
   HealthStatus,
   LoginInput,
   LoginResponse,
+  ManagementMember,
+  ManagementMemberInput,
   Notice,
   NoticeInput,
   NoticeUpdate,
@@ -435,6 +437,296 @@ export const useUpdateSchoolInfo = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getUpdateSchoolInfoMutationOptions(options));
+    }
+
+export const getGetManagementUrl = () => {
+
+
+
+
+  return `/api/management`
+}
+
+/**
+ * @summary List management committee members
+ */
+export const getManagement = async ( options?: RequestInit): Promise<ManagementMember[]> => {
+
+  return customFetch<ManagementMember[]>(getGetManagementUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetManagementQueryKey = () => {
+    return [
+    `/api/management`
+    ] as const;
+    }
+
+
+export const getGetManagementQueryOptions = <TData = Awaited<ReturnType<typeof getManagement>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getManagement>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetManagementQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getManagement>>> = ({ signal }) => getManagement({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getManagement>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetManagementQueryResult = NonNullable<Awaited<ReturnType<typeof getManagement>>>
+export type GetManagementQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List management committee members
+ */
+
+export function useGetManagement<TData = Awaited<ReturnType<typeof getManagement>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getManagement>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetManagementQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateManagementMemberUrl = () => {
+
+
+
+
+  return `/api/management`
+}
+
+/**
+ * @summary Add management member (admin)
+ */
+export const createManagementMember = async (managementMemberInput: ManagementMemberInput, options?: RequestInit): Promise<ManagementMember> => {
+
+  return customFetch<ManagementMember>(getCreateManagementMemberUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      managementMemberInput,)
+  }
+);}
+
+
+
+
+export const getCreateManagementMemberMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createManagementMember>>, TError,{data: BodyType<ManagementMemberInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createManagementMember>>, TError,{data: BodyType<ManagementMemberInput>}, TContext> => {
+
+const mutationKey = ['createManagementMember'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createManagementMember>>, {data: BodyType<ManagementMemberInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createManagementMember(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateManagementMemberMutationResult = NonNullable<Awaited<ReturnType<typeof createManagementMember>>>
+    export type CreateManagementMemberMutationBody = BodyType<ManagementMemberInput>
+    export type CreateManagementMemberMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Add management member (admin)
+ */
+export const useCreateManagementMember = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createManagementMember>>, TError,{data: BodyType<ManagementMemberInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createManagementMember>>,
+        TError,
+        {data: BodyType<ManagementMemberInput>},
+        TContext
+      > => {
+      return useMutation(getCreateManagementMemberMutationOptions(options));
+    }
+
+export const getUpdateManagementMemberUrl = (id: string,) => {
+
+
+
+
+  return `/api/management/${id}`
+}
+
+/**
+ * @summary Update management member (admin)
+ */
+export const updateManagementMember = async (id: string,
+    managementMemberInput: ManagementMemberInput, options?: RequestInit): Promise<ManagementMember> => {
+
+  return customFetch<ManagementMember>(getUpdateManagementMemberUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      managementMemberInput,)
+  }
+);}
+
+
+
+
+export const getUpdateManagementMemberMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateManagementMember>>, TError,{id: string;data: BodyType<ManagementMemberInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateManagementMember>>, TError,{id: string;data: BodyType<ManagementMemberInput>}, TContext> => {
+
+const mutationKey = ['updateManagementMember'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateManagementMember>>, {id: string;data: BodyType<ManagementMemberInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateManagementMember(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateManagementMemberMutationResult = NonNullable<Awaited<ReturnType<typeof updateManagementMember>>>
+    export type UpdateManagementMemberMutationBody = BodyType<ManagementMemberInput>
+    export type UpdateManagementMemberMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Update management member (admin)
+ */
+export const useUpdateManagementMember = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateManagementMember>>, TError,{id: string;data: BodyType<ManagementMemberInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateManagementMember>>,
+        TError,
+        {id: string;data: BodyType<ManagementMemberInput>},
+        TContext
+      > => {
+      return useMutation(getUpdateManagementMemberMutationOptions(options));
+    }
+
+export const getDeleteManagementMemberUrl = (id: string,) => {
+
+
+
+
+  return `/api/management/${id}`
+}
+
+/**
+ * @summary Delete management member (admin)
+ */
+export const deleteManagementMember = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteManagementMemberUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteManagementMemberMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteManagementMember>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteManagementMember>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteManagementMember'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteManagementMember>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteManagementMember(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteManagementMemberMutationResult = NonNullable<Awaited<ReturnType<typeof deleteManagementMember>>>
+
+    export type DeleteManagementMemberMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Delete management member (admin)
+ */
+export const useDeleteManagementMember = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteManagementMember>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteManagementMember>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteManagementMemberMutationOptions(options));
     }
 
 export const getGetStaffUrl = (params?: GetStaffParams,) => {

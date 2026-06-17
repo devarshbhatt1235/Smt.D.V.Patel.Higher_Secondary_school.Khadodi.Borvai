@@ -100,6 +100,61 @@ export const UpdateSchoolInfoResponse = zod.object({
 
 
 /**
+ * @summary List management committee members
+ */
+export const GetManagementResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "designation": zod.string(),
+  "photoUrl": zod.string().nullish(),
+  "order": zod.number().optional()
+})
+export const GetManagementResponse = zod.array(GetManagementResponseItem)
+
+
+/**
+ * @summary Add management member (admin)
+ */
+export const CreateManagementMemberBody = zod.object({
+  "name": zod.string(),
+  "designation": zod.string(),
+  "photoUrl": zod.string().optional(),
+  "order": zod.number().optional()
+})
+
+
+/**
+ * @summary Update management member (admin)
+ */
+export const UpdateManagementMemberParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UpdateManagementMemberBody = zod.object({
+  "name": zod.string(),
+  "designation": zod.string(),
+  "photoUrl": zod.string().optional(),
+  "order": zod.number().optional()
+})
+
+export const UpdateManagementMemberResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "designation": zod.string(),
+  "photoUrl": zod.string().nullish(),
+  "order": zod.number().optional()
+})
+
+
+/**
+ * @summary Delete management member (admin)
+ */
+export const DeleteManagementMemberParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+/**
  * @summary List all staff
  */
 export const GetStaffQueryParams = zod.object({

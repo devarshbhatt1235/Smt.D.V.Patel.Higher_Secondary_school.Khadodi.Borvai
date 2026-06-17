@@ -27,6 +27,7 @@ import AdminGallery from "@/pages/admin/Gallery";
 import AdminCasteStats from "@/pages/admin/CasteStats";
 import AdminSchoolInfo from "@/pages/admin/SchoolInfo";
 import AdminContactInfo from "@/pages/admin/ContactInfo";
+import AdminManagement from "@/pages/admin/Management";
 
 import { useAuth } from "@/hooks/use-auth";
 
@@ -79,6 +80,7 @@ function ProtectedAdminRoutes() {
         <Route path="/admin/caste-stats" component={AdminCasteStats} />
         <Route path="/admin/school-info" component={AdminSchoolInfo} />
         <Route path="/admin/contact" component={AdminContactInfo} />
+        <Route path="/admin/management" component={AdminManagement} />
         <Route component={NotFound} />
       </Switch>
     </AdminLayout>

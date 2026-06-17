@@ -17,6 +17,7 @@ tags:
   - name: schoolInfo
   - name: casteStats
   - name: contact
+  - name: management
 
 paths:
   /healthz:
@@ -98,6 +99,77 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SchoolInfo"
+
+  # --- Management ---
+  /management:
+    get:
+      operationId: getManagement
+      tags: [management]
+      summary: List management committee members
+      responses:
+        "200":
+          description: List of management members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ManagementMember"
+    post:
+      operationId: createManagementMember
+      tags: [management]
+      summary: Add management member (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManagementMemberInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementMember"
+
+  /management/{id}:
+    patch:
+      operationId: updateManagementMember
+      tags: [management]
+      summary: Update management member (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ManagementMemberInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ManagementMember"
+    delete:
+      operationId: deleteManagementMember
+      tags: [management]
+      summary: Delete management member (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
 
   # --- Staff ---
   /staff:
@@ -1122,6 +1194,35 @@ components:
           type: string
         youtubeUrl:
           type: string
+
+    # Management
+    ManagementMember:
+      type: object
+      required: [id, name, designation]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        designation:
+          type: string
+        photoUrl:
+          type: ["string", "null"]
+        order:
+          type: integer
+
+    ManagementMemberInput:
+      type: object
+      required: [name, designation]
+      properties:
+        name:
+          type: string
+        designation:
+          type: string
+        photoUrl:
+          type: string
+        order:
+          type: integer
 
     # Dashboard
     DashboardStats:

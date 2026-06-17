@@ -1,18 +1,11 @@
-import { useGetSchoolInfo } from "@workspace/api-client-react";
+import { useGetManagement, useGetSchoolInfo } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
 
 export default function Management() {
-  const { data: info, isLoading } = useGetSchoolInfo();
-
-  const members = [
-    { role: "પ્રમુખ (President)", name: info?.presidentName, color: "bg-blue-100 text-blue-700" },
-    { role: "ઉપ-પ્રમુખ (Vice President)", name: "—", color: "bg-indigo-100 text-indigo-700" },
-    { role: "મંત્રી (Secretary)", name: info?.secretaryName, color: "bg-green-100 text-green-700" },
-    { role: "ખજાનચી (Treasurer)", name: "—", color: "bg-yellow-100 text-yellow-700" },
-    { role: "આચાર્ય (Principal)", name: info?.principalName, color: "bg-primary/10 text-primary" },
-  ];
+  const { data: members, isLoading } = useGetManagement();
+  const { data: info, isLoading: infoLoading } = useGetSchoolInfo();
 
   return (
     <div>
@@ -27,7 +20,7 @@ export default function Management() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-primary mb-4">
-              {isLoading ? <Skeleton className="h-8 w-96 mx-auto" /> : info?.trustName}
+              {infoLoading ? <Skeleton className="h-8 w-96 mx-auto" /> : info?.trustName}
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               અમારી શ્રદ્ધેય સંચાલક સમિતિ, ગ્રામ્ય સ્તરે ઉચ્ચ ગુણવત્તાવાળું શિક્ષણ ઉપલબ્ધ
@@ -36,19 +29,35 @@ export default function Management() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {members.map((member, i) => (
-              <Card key={i} className="border-primary/10 hover:shadow-md transition-shadow">
-                <CardContent className="p-6 text-center">
-                  <div className={`w-16 h-16 ${member.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                    <User size={28} />
-                  </div>
-                  <div className="text-sm text-gray-500 mb-2">{member.role}</div>
-                  <div className="font-bold text-lg text-gray-900">
-                    {isLoading ? <Skeleton className="h-6 w-36 mx-auto" /> : member.name}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <Card key={i} className="border-primary/10">
+                    <CardContent className="p-6 text-center">
+                      <Skeleton className="w-20 h-20 rounded-full mx-auto mb-4" />
+                      <Skeleton className="h-4 w-28 mx-auto mb-2" />
+                      <Skeleton className="h-6 w-40 mx-auto" />
+                    </CardContent>
+                  </Card>
+                ))
+              : (members || []).map((member) => (
+                  <Card key={member.id} className="border-primary/10 hover:shadow-md transition-shadow">
+                    <CardContent className="p-6 text-center">
+                      {member.photoUrl ? (
+                        <img
+                          src={member.photoUrl}
+                          alt={member.name}
+                          className="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-2 border-primary/20"
+                        />
+                      ) : (
+                        <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                          <User size={32} />
+                        </div>
+                      )}
+                      <div className="text-sm text-gray-500 mb-1 font-medium">{member.designation}</div>
+                      <div className="font-bold text-lg text-gray-900">{member.name}</div>
+                    </CardContent>
+                  </Card>
+                ))}
           </div>
         </div>
       </section>
@@ -58,13 +67,13 @@ export default function Management() {
           <h2 className="text-2xl font-bold text-primary mb-6">અમારી ઓળખ</h2>
           <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
             {[
-              { label: "ઇ.સ.", value: info?.established, desc: "સ્થાપના વર્ષ" },
-              { label: "9 – 12", value: "", desc: "ધોરણ" },
-              { label: "ખાનપુર", value: "", desc: "તાલુકો" },
+              { label: String(info?.established ?? "1972"), desc: "સ્થાપના વર્ષ" },
+              { label: "9 – 12", desc: "ધોરણ" },
+              { label: "ખાનપુર", desc: "તાલુકો" },
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-xl p-6 shadow-sm">
                 <div className="text-3xl font-bold text-primary mb-1">
-                  {isLoading ? <Skeleton className="h-8 w-20 mx-auto" /> : item.label || item.value}
+                  {infoLoading ? <Skeleton className="h-8 w-20 mx-auto" /> : item.label}
                 </div>
                 <div className="text-gray-500 text-sm">{item.desc}</div>
               </div>

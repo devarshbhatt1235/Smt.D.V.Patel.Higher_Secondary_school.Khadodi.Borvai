@@ -19,6 +19,12 @@ export function useAuth() {
     query: {
       enabled: !!token,
       retry: false,
+      onError: (err: any) => {
+        if (err?.status === 401 || err?.status === 500) {
+          localStorage.removeItem("school_token");
+          setTokenState(null);
+        }
+      },
     } as any,
   });
 
